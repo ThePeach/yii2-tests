@@ -1,0 +1,15 @@
+{
+    "name": "peach/yii2composer",
+    "description": "Installing Yii 2 from scratch with composer",
+    "require": {
+        "yiisoft/yii2": "*"
+    },
+    "license": "GPL-3.0",
+    "authors": [
+        {
+            "name": "Matteo 'Peach' Pescarin",
+            "email": "peach@smartart.it"
+        }
+    ],
+    "minimum-stability": "dev"
+}
