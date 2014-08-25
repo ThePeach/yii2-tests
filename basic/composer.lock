@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "478d4108a1ca4573556cda340edd5e7b",
+    "hash": "876b1801614bef06b8efefae227c8c46",
     "packages": [
         {
             "name": "cebe/markdown",
@@ -1913,16 +1913,16 @@
         },
         {
             "name": "yiisoft/yii2-codeception",
-            "version": "dev-master",
+            "version": "2.0.0-beta",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-codeception.git",
-                "reference": "05833719fc2cc14d6914e7c080267b067009b26e"
+                "reference": "11af1a8575c3f19979a26fe78b04f012d70f8433"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-codeception/zipball/05833719fc2cc14d6914e7c080267b067009b26e",
-                "reference": "05833719fc2cc14d6914e7c080267b067009b26e",
+                "url": "https://api.github.com/repos/yiisoft/yii2-codeception/zipball/11af1a8575c3f19979a26fe78b04f012d70f8433",
+                "reference": "11af1a8575c3f19979a26fe78b04f012d70f8433",
                 "shasum": ""
             },
             "require": {
@@ -1949,7 +1949,7 @@
                 "codeception",
                 "yii2"
             ],
-            "time": "2014-08-24 10:14:35"
+            "time": "2014-04-13 21:58:59"
         },
         {
             "name": "yiisoft/yii2-debug",
