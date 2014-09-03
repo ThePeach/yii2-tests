@@ -8,7 +8,7 @@ return [
             'useFileTransport' => true,
         ],
         'urlManager' => [
-            'showScriptName' => true,
+            'showScriptName' => false,
         ],
     ],
 ];
