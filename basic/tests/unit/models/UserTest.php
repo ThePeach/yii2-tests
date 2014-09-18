@@ -6,7 +6,6 @@ use app\models\User;
 use \app\tests\fixtures\UserFixture;
 use Codeception\Util\Stub;
 use yii\codeception\TestCase;
-use yii\web\IdentityInterface;
 use Yii;
 
 class UserTest extends TestCase
@@ -20,10 +19,6 @@ class UserTest extends TestCase
 //            'user' => UserFixture::className(),
 //        ];
 //    }
-
-    public static function setUpBeforeClass() {
-        fwrite(STDOUT, __METHOD__ . "\n");
-    }
 
     protected function setUp()
     {
@@ -58,61 +53,40 @@ class UserTest extends TestCase
         $this->assertTrue($this->_user->validate());
     }
 
-    /**
-     * @param int    $expectedId
-     * @param string $expectedUsername
-     * @param string $expectedPassword
-     * @param string $expectedAuthkey
-     *
-     * @dataProvider validUserConfigDataProvider
-     */
-    public function testGetIdReturnsTheExpectedId(
-        $expectedId, $expectedUsername, $expectedPassword, $expectedAuthkey
-    ) {
-        $user = new User([
-            'id' => $expectedId,
-            'username' => $expectedUsername,
-            'password' => $expectedPassword,
-            'authkey' => $expectedAuthkey
-        ]);
+    public function testGetIdReturnsTheExpectedId() {
+        $expectedId = 123;
+        $this->_user->id = $expectedId;
 
-        $this->assertEquals($expectedId, $user->getId());
+        $this->assertEquals($expectedId, $this->_user->getId());
     }
 
     /**
      * @dataProvider validUserConfigDataProvider
      */
-    public function testGetAuthKeyReturnsTheExpectedAuthKey(
-        $expectedId, $expectedUsername, $expectedPassword, $expectedAuthkey
-    ) {
-        $user = new User([
-            'id' => $expectedId,
-            'username' => $expectedUsername,
-            'password' => $expectedPassword,
+    public function testGetAuthKeyReturnsTheExpectedAuthKey() {
+        $expectedAuthkey = 'valid authkey';
+        $this->_user->attributes = [
+            'username' => 'valid username',
+            'password' => 'valid password',
             'authkey' => $expectedAuthkey
-        ]);
+        ];
 
-        $this->assertEquals($expectedAuthkey, $user->getAuthKey());
+        $this->assertEquals($expectedAuthkey, $this->_user->getAuthKey());
     }
 
     /**
-     * @param int    $expectedId
-     * @param string $expectedUsername
-     * @param string $expectedPassword
-     * @param string $expectedAuthkey
-     *
-     * @dataProvider validUserConfigDataProvider
+     * @FIXME this should work with fixtures
      */
     public function testFindIdentityReturnsTheExpectedObject(
-        $expectedId, $expectedUsername, $expectedPassword, $expectedAuthkey
     ) {
-        $user = new User([
-            'id' => $expectedId,
-            'username' => $expectedUsername,
-            'password' => $expectedPassword,
-            'authkey' => $expectedAuthkey
-        ]);
-        $this->assertTrue($user->save());
+        $this->_user->attributes = [
+            'username' => 'valid user',
+            'password' => 'valid password',
+            'authkey' => 'valid authkey'
+        ];
+        $this->assertTrue($this->_user->save());
+
+        $expectedId = $this->_user->id;
 
         $user = User::findIdentity($expectedId);
         $this->assertNotNull($user);
@@ -121,6 +95,8 @@ class UserTest extends TestCase
 
     /**
      * @dataProvider nonExistingIdsDataProvider
+     *
+     * @FIXME this should work with fixtures
      */
     public function testFindIdentityReturnsNullIfUserIsNotFound(
         $invalidId
@@ -129,18 +105,21 @@ class UserTest extends TestCase
     }
 
     public function nonExistingIdsDataProvider() {
-        return [[-1], [null], [3]];
+        return [[-1], [null]];
     }
 
+    /**
+     * @FIXME this should work with fixtures
+     */
     public function testFindIdentityByAccessTokenReturnsTheExpectedObject() {
         $expectedAccessToken = $this->generateRandomString(10);
-        $user = new User([
+        $this->_user->attributes = [
             'username' => 'valid username',
             'password' => 'valid password',
             'authkey' => 'valid authkey',
             'accessToken' => $expectedAccessToken
-        ]);
-        $this->assertTrue($user->save());
+        ];
+        $this->assertTrue($this->_user->save());
 
         $user = User::findIdentityByAccessToken($expectedAccessToken);
         $this->assertNotNull($user);
@@ -149,11 +128,12 @@ class UserTest extends TestCase
 
     /**
      * @dataProvider nonExistingAccessTokenDataProvider
+     *
+     * @FIXME this should work with fixtures
      */
     public function testFindIdentityByAccessTokenReturnsNullIfUserIsNotFound(
         $invalidAccessToken
     ) {
-        fwrite(STDOUT, $invalidAccessToken);
         $this->assertNull(User::findIdentityByAccessToken($invalidAccessToken));
     }
 
@@ -170,6 +150,8 @@ class UserTest extends TestCase
      * @param string $expectedAuthkey
      *
      * @dataProvider validUserConfigDataProvider
+     *
+     * @FIXME this should work with fixtures
      */
     public function testFindByUsernameReturnsTheExpectedObject(
         $expectedId, $expectedUsername, $expectedPassword, $expectedAuthkey
@@ -188,6 +170,8 @@ class UserTest extends TestCase
 
     /**
      * @dataProvider nonExistingUsernamesDataProvider
+     *
+     * @FIXME this should work with fixtures
      */
     public function testFindByUsernameReturnsNullIfUserNotFound(
         $invalidUsername
@@ -198,7 +182,6 @@ class UserTest extends TestCase
     public function nonExistingUsernamesDataProvider() {
         return [[3], [-1], [null], ['not found']];
     }
-
 
 
     public function testValidateAuthkeyReturnsFalseIfAuthkeyIsDifferent() {
@@ -217,20 +200,27 @@ class UserTest extends TestCase
 
     public function testValidatePasswordReturnsTrueIfPasswordIsCorrect() {
         $expectedPassword = 'valid password';
-        $security = Stub::construct(
-            'yii\base\Security',
-            [
-                'validatePassword' => true,
-                'generatePasswordHash' => $expectedPassword
-            ]
-        );
-//        $security = Stub::copy(
-//            Yii::$app->getSecurity(),
+//        $security = Stub::construct(
+//            'yii\base\Security',
 //            [
 //                'validatePassword' => true,
 //                'generatePasswordHash' => $expectedPassword
 //            ]
 //        );
+
+        $security = $this->getMock(
+            'yii\base\Security',
+            ['validatePassword', 'generatePasswordHash']
+        );
+        $security->expects($this->any())
+            ->method('validatePassword')
+            ->with($expectedPassword)
+            ->willReturn(true);
+        $security->expects($this->any())
+            ->method('generatePasswordHash')
+            ->with($expectedPassword)
+            ->willReturn($expectedPassword);
+
         Yii::$app->set('security', $security);
 
         $this->_user->password = Yii::$app->getSecurity()->generatePasswordHash($expectedPassword);
@@ -262,25 +252,6 @@ class UserTest extends TestCase
                 $this->generateRandomString(rand(1,255)) // authkey
             ];
         }
-        return $output;
-    }
-
-    /**
-     * valid User config Data Provider.
-     *
-     * @return array
-     */
-    public function invalidUserConfigDataProvider() {
-        $output = [
-            [rand(1,999), null, null, null],
-            [null, $this->generateRandomString(rand(1,24)), null, null],
-            [null, null, $this->generateRandomString(rand(1,128)), null],
-            [null, null, null, $this->generateRandomString(rand(1,255))],
-            [null, null, $this->generateRandomString(rand(1,128)), $this->generateRandomString(rand(1,255))],
-            [null, $this->generateRandomString(rand(1,24)), $this->generateRandomString(rand(1,128)), $this->generateRandomString(rand(1,255))],
-            [null, $this->generateRandomString(rand(1,24)), null, $this->generateRandomString(rand(1,255))],
-            [null, $this->generateRandomString(rand(1,24)), null, $this->generateRandomString(rand(1,255))],
-        ];
         return $output;
     }
 
