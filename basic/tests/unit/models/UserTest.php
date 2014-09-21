@@ -27,31 +27,25 @@ class UserTest extends TestCase
         $this->_user = new User;
     }
 
+    /* VALIDATION RULES */
+
     public function testValidateReturnsFalseIfParametersAreNotSet()
     {
         $this->assertFalse($this->_user->validate());
     }
 
-    /**
-     * @param int    $expectedId
-     * @param string $expectedUsername
-     * @param string $expectedPassword
-     * @param string $expectedAuthkey
-     *
-     * @dataProvider validUserConfigDataProvider
-     */
-    public function testValidateReturnsTrueIfParametersAreSet(
-        $expectedId, $expectedUsername, $expectedPassword, $expectedAuthkey
-    )
+    public function testValidateReturnsTrueIfParametersAreSet()
     {
         $this->_user->attributes = [
-            'username' => $expectedUsername,
-            'password' => $expectedPassword,
-            'authkey' => $expectedAuthkey
+            'username' => 'a valid username',
+            'password' => 'a valid password',
+            'authkey' => 'a valid authkey'
         ];
 
         $this->assertTrue($this->_user->validate());
     }
+
+    /* getId() */
 
     public function testGetIdReturnsTheExpectedId()
     {
@@ -61,6 +55,8 @@ class UserTest extends TestCase
         $this->assertEquals($expectedId, $this->_user->getId());
     }
 
+    /* getAuthKey() */
+
     public function testGetAuthKeyReturnsTheExpectedAuthKey()
     {
         $expectedAuthkey = 'valid authkey';
@@ -69,17 +65,23 @@ class UserTest extends TestCase
         $this->assertEquals($expectedAuthkey, $this->_user->getAuthKey());
     }
 
+    /* findIdentity() */
+
     /**
      * @dataProvider validFixturesKeysDataProvider
      */
     public function testFindIdentityReturnsTheExpectedObject($fixtureKey) {
-        $expectedId = $this->user[$fixtureKey]['id'];
+        $expectedAttrs = $this->user[$fixtureKey];
 
         /** @var User $user */
-        $user = User::findIdentity($expectedId);
+        $user = User::findIdentity($expectedAttrs['id']);
+
         $this->assertNotNull($user);
         $this->assertInstanceOf('yii\web\IdentityInterface', $user);
-        $this->assertEquals($expectedId, $user->id);
+        $this->assertEquals($expectedAttrs['id'], $user->id);
+        $this->assertEquals($expectedAttrs['username'], $user->username);
+        $this->assertEquals($expectedAttrs['password'], $user->password);
+        $this->assertEquals($expectedAttrs['authkey'], $user->authkey);
     }
 
     /**
@@ -94,6 +96,8 @@ class UserTest extends TestCase
     public function nonExistingIdsDataProvider() {
         return [[-1], [null], [300]];
     }
+
+    /* findIdentityByAccessToken() */
 
     public function testFindIdentityByAccessTokenReturnsTheExpectedObject()
     {
@@ -121,6 +125,8 @@ class UserTest extends TestCase
         ];
     }
 
+    /* findByUsername() */
+
     /**
      * @dataProvider validFixturesKeysDataProvider
      */
@@ -137,8 +143,6 @@ class UserTest extends TestCase
 
     /**
      * @dataProvider nonExistingUsernamesDataProvider
-     *
-     * @FIXME this should work with fixtures
      */
     public function testFindByUsernameReturnsNullIfUserNotFound(
         $invalidUsername
@@ -149,6 +153,8 @@ class UserTest extends TestCase
     public function nonExistingUsernamesDataProvider() {
         return [[3], [-1], [null], ['not found']];
     }
+
+    /* validateAuthkey() */
 
     public function testValidateAuthkeyReturnsFalseIfAuthkeyIsDifferent() {
         $this->_user->authkey = 'some auth key';
@@ -163,6 +169,7 @@ class UserTest extends TestCase
         $this->assertTrue($this->_user->validateAuthKey($expectedAuthkey));
     }
 
+    /* validatePassword() */
 
     public function testValidatePasswordReturnsTrueIfPasswordIsCorrect() {
         $expectedPassword = 'valid password';
@@ -193,6 +200,8 @@ class UserTest extends TestCase
     }
 
     /**
+     * Mocks the Yii Security module so we can make it return what we need
+     *
      * @param string $expectedPassword the password used for encoding
      *                                 also used for validating if the second parameter is not set
      * @param mixed $wrongPassword     if passed, validatePassword will throw exception InvalidParamException
@@ -230,32 +239,5 @@ class UserTest extends TestCase
             ->willReturn($expectedPassword);
 
         Yii::$app->set('security', $security);
-    }
-
-    /**
-     * valid User config Data Provider.
-     *
-     * @return array
-     */
-    public function validUserConfigDataProvider() {
-        $output = [];
-        for ($i = 0; $i < 2; $i++) {
-            $output[] = [
-                rand(1,999), // id
-                $this->_generateRandomString(rand(1,24)), // username
-                $this->_generateRandomString(rand(1,128)), // password
-                $this->_generateRandomString(rand(1,255)) // authkey
-            ];
-        }
-        return $output;
-    }
-
-    private function _generateRandomString($length = 10) {
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $randomString = '';
-        for ($i = 0; $i < $length; $i++) {
-            $randomString .= $characters[rand(0, strlen($characters) - 1)];
-        }
-        return $randomString;
     }
 }
