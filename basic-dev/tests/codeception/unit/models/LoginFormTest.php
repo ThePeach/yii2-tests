@@ -12,11 +12,10 @@ class LoginFormTest extends TestCase
 {
     use Specify;
 
-    public function fixtures()
+    public function globalFixtures()
     {
         return [
             'user' => UserFixture::className(),
-            'dataFile' => '@app/tests/codeception/unit/fixtures/data/userMigration.php'
         ];
     }
 

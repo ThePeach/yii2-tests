@@ -14,10 +14,20 @@ class UserTest extends TestCase
     /** @var User */
     private $_user = null;
 
-    public function fixtures()
+    public function globalFixtures()
     {
         return [
             'user' => UserFixture::className(),
+        ];
+    }
+
+    public function fixtures()
+    {
+        return [
+            'user' => [
+                'class' => UserFixture::className(),
+                'dataFile' => '@app/tests/codeception/unit/fixtures/data/userModels.php'
+            ]
         ];
     }
 
@@ -195,7 +205,7 @@ class UserTest extends TestCase
     public function validFixturesKeysDataProvider()
     {
         return [
-            ['user_basic'], ['admin'], ['user_accessToken'], ['user_id']
+            ['user_basic'], ['user_accessToken'], ['user_id']
         ];
     }
 
@@ -210,12 +220,18 @@ class UserTest extends TestCase
     private function _mockYiiSecurity($expectedPassword, $wrongPassword = false)
     {
         // @FIXME the following doesn't work!! :-(
+//        $configuration = [
+//            'generatePasswordHash' => $expectedPassword
+//        ];
+//        if ($wrongPassword) {
+//            $configuration['validatePassword'] = function () { throw new InvalidParamException(); };
+//        }
+//        else {
+//            $configuration['validatePassword'] = true;
+//        }
 //        $security = Stub::construct(
 //            'yii\base\Security',
-//            [
-//                'validatePassword' => true,
-//                'generatePasswordHash' => $expectedPassword
-//            ]
+//            $configuration
 //        );
 
         $security = $this->getMock(
