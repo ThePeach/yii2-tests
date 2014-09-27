@@ -2,6 +2,7 @@
 
 namespace tests\codeception\unit\models;
 
+use app\tests\codeception\unit\fixtures\UserFixture;
 use Yii;
 use yii\codeception\TestCase;
 use app\models\LoginForm;
@@ -10,6 +11,14 @@ use Codeception\Specify;
 class LoginFormTest extends TestCase
 {
     use Specify;
+
+    public function fixtures()
+    {
+        return [
+            'user' => UserFixture::className(),
+            'dataFile' => '@app/tests/codeception/unit/fixtures/data/userMigration.php'
+        ];
+    }
 
     protected function tearDown()
     {
@@ -33,7 +42,7 @@ class LoginFormTest extends TestCase
     public function testLoginWrongPassword()
     {
         $model = new LoginForm([
-            'username' => 'demo',
+            'username' => 'admin',
             'password' => 'wrong_password',
         ]);
 
@@ -47,8 +56,8 @@ class LoginFormTest extends TestCase
     public function testLoginCorrect()
     {
         $model = new LoginForm([
-            'username' => 'demo',
-            'password' => 'demo',
+            'username' => 'admin',
+            'password' => 'admin',
         ]);
 
         $this->specify('user should be able to login with correct credentials', function () use ($model) {
