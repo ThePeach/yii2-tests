@@ -109,30 +109,12 @@ class UserTest extends TestCase
 
     /* findIdentityByAccessToken() */
 
+    /**
+     * @expectedException yii\base\NotSupportedException
+     */
     public function testFindIdentityByAccessTokenReturnsTheExpectedObject()
     {
-        $expectedAccessToken = $this->user['user_accessToken']['accessToken'];
-
-        /** @var User $user */
-        $user = User::findIdentityByAccessToken($expectedAccessToken);
-        $this->assertNotNull($user);
-        $this->assertInstanceOf('yii\web\IdentityInterface', $user);
-        $this->assertEquals($expectedAccessToken, $user->accessToken);
-    }
-
-    /**
-     * @dataProvider nonExistingAccessTokenDataProvider
-     */
-    public function testFindIdentityByAccessTokenReturnsNullIfUserIsNotFound(
-        $invalidAccessToken
-    ) {
-        $this->assertNull(User::findIdentityByAccessToken($invalidAccessToken));
-    }
-
-    public function nonExistingAccessTokenDataProvider() {
-        return [
-            [null], ['non existing access token'], ['']
-        ];
+        User::findIdentityByAccessToken('anyAccessToken');
     }
 
     /* findByUsername() */
@@ -231,6 +213,7 @@ class UserTest extends TestCase
 //        }
 //        $security = Stub::construct(
 //            'yii\base\Security',
+//            [[]],
 //            $configuration
 //        );
 

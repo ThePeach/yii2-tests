@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\base\NotSupportedException;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
@@ -13,7 +14,6 @@ use yii\web\IdentityInterface;
  * @property string  $username
  * @property string  $password
  * @property string  $authkey
- * @property string  $accessToken
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -34,7 +34,7 @@ class User extends ActiveRecord implements IdentityInterface
             [['username', 'password', 'authkey'], 'required'],
             [['username'], 'string', 'max' => 24],
             [['password'], 'string', 'max' => 128],
-            [['authkey', 'accessToken'], 'string', 'max' => 255]
+            [['authkey'], 'string', 'max' => 255]
         ];
     }
 
@@ -48,7 +48,6 @@ class User extends ActiveRecord implements IdentityInterface
             'username' => 'Username',
             'password' => 'Password',
             'authkey' => 'Authkey',
-            'accessToken' => 'Access Token',
         ];
     }
 
@@ -65,11 +64,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        if ($token === null) {
-            return null;
-        }
-
-        return self::findOne(['accessToken' => $token]);
+        throw new NotSupportedException(__METHOD__ . ' has not been implemented.');
     }
 
     /**

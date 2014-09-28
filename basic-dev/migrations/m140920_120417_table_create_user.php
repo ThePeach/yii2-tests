@@ -12,7 +12,6 @@ class m140920_120417_table_create_user extends Migration
                 'username' => 'varchar(24) NOT NULL',
                 'password' => 'varchar(128) NOT NULL',
                 'authkey' => 'varchar(255) NOT NULL',
-                'accessToken' => 'varchar(255)'
             ]);
 
         $this->insert('user', [
