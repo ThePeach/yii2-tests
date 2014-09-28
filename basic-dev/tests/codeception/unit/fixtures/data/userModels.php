@@ -9,8 +9,7 @@ return [
     'user_accessToken' => [
         'username' => '-=[ valid username ]=-',
         'password' => 'This is another valid password!!! :) <script></script>',
-        'authkey' => uniqid(),
-        'accessToken' => uniqid()
+        'authkey' => uniqid()
     ],
     'user_id' => [
         'id' => 4,
