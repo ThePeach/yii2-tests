@@ -191,31 +191,51 @@ class UserTest extends TestCase
         ];
     }
 
+    /* setPassword() */
+
+    public function testSetPasswordEncryptsThePasswordCorrectly()
+    {
+        $clearTextPassword = 'some password';
+        $encryptedPassword = 'encrypted password';
+        $this->_mockYiiSecurity($encryptedPassword, false, $clearTextPassword);
+
+        $this->_user->setPassword($clearTextPassword);
+
+        $this->assertNotEquals($clearTextPassword, $this->_user->password);
+        $this->assertEquals($encryptedPassword, $this->_user->password);
+    }
+
+    public function testSetPasswordCallsGeneratePasswordHash()
+    {
+        $clearTextPassword = 'some password';
+
+        $security = $this->getMock(
+            'yii\base\Security',
+            ['generatePasswordHash']
+        );
+        $security->expects($this->once())
+            ->method('generatePasswordHash')
+            ->with($this->equalTo($clearTextPassword));
+        Yii::$app->set('security', $security);
+
+        $this->_user->setPassword($clearTextPassword);
+    }
+
     /**
      * Mocks the Yii Security module so we can make it return what we need
      *
      * @param string $expectedPassword the password used for encoding
      *                                 also used for validating if the second parameter is not set
-     * @param mixed $wrongPassword     if passed, validatePassword will throw exception InvalidParamException
+     * @param mixed  $wrongPassword    if passed, validatePassword will throw exception InvalidParamException
      *                                 when presenting this pass
+     * @param null $actualPassword     if passed it will set the actual password
+     *                                 otherwise it will use the expected password
      */
-    private function _mockYiiSecurity($expectedPassword, $wrongPassword = false)
+    private function _mockYiiSecurity($expectedPassword, $wrongPassword = false, $actualPassword = null)
     {
-        // @FIXME the following doesn't work!! :-(
-//        $configuration = [
-//            'generatePasswordHash' => $expectedPassword
-//        ];
-//        if ($wrongPassword) {
-//            $configuration['validatePassword'] = function () { throw new InvalidParamException(); };
-//        }
-//        else {
-//            $configuration['validatePassword'] = true;
-//        }
-//        $security = Stub::construct(
-//            'yii\base\Security',
-//            [[]],
-//            $configuration
-//        );
+        if ($actualPassword === null) {
+            $actualPassword = $expectedPassword;
+        }
 
         $security = $this->getMock(
             'yii\base\Security',
@@ -229,12 +249,12 @@ class UserTest extends TestCase
         } else {
             $security->expects($this->any())
                 ->method('validatePassword')
-                ->with($expectedPassword)
+                ->with($actualPassword)
                 ->willReturn(true);
         }
         $security->expects($this->any())
             ->method('generatePasswordHash')
-            ->with($expectedPassword)
+            ->with($actualPassword)
             ->willReturn($expectedPassword);
 
         Yii::$app->set('security', $security);
