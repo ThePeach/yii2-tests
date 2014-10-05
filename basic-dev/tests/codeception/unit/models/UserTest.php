@@ -4,13 +4,15 @@ namespace tests\codeception\unit\models;
 
 use app\models\User;
 use app\tests\codeception\unit\fixtures\UserFixture;
-use Codeception\Util\Stub;
 use yii\base\InvalidParamException;
 use yii\codeception\TestCase;
+use Codeception\Specify;
 use Yii;
 
 class UserTest extends TestCase
 {
+    use Specify;
+
     /** @var User */
     private $_user = null;
 
@@ -38,6 +40,58 @@ class UserTest extends TestCase
     }
 
     /* VALIDATION RULES */
+
+    public function testValidationRules()
+    {
+        $this->specify(
+            'user should validate if all attributes are set',
+            function () {
+                $this->_user->attributes = [
+                    'username'=>'valid username',
+                    'password'=>'valid password',
+                    'authkey' =>'valid authkey'
+                ];
+                verify_that($this->_user->validate());
+            }
+        );
+
+        $this->specify(
+            'user should not validate if no attribute is set',
+            function () {
+                verify_not($this->_user->validate());
+            }
+        );
+
+        $this->specify(
+            'user with username too long should not validate',
+            function () {
+                $this->_user->username = 'this is a username longer than 24 characters';
+
+                verify_not($this->_user->validate('username'));
+                verify($this->_user->getErrors('username'))->notEmpty();
+            }
+        );
+
+        $this->specify(
+            'user with password too long should not validate',
+            function () {
+                $this->_user->password = 'this is an password longer than 128 characters this is an password longer than 128 characters this is an password longer than 128 characters';
+
+                verify_not($this->_user->validate('password'));
+                verify($this->_user->getErrors('password'))->notEmpty();
+            }
+        );
+
+        $this->specify(
+            'user with authkey too long should not validate',
+            function () {
+                $this->_user->authkey = 'this is an authkey longer than 255 characters this is an authkey longer than 255 characters this is an authkey longer than 255 characters this is an authkey longer than 255 characters this is an authkey longer than 255 characters this is an authkey longer than 255 characters';
+
+                verify_not($this->_user->validate('authkey'));
+                verify($this->_user->getErrors('authkey'))->notEmpty();
+            }
+        );
+    }
 
     public function testValidateReturnsFalseIfParametersAreNotSet()
     {
