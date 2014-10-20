@@ -110,7 +110,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function validateAuthKey($authKey)
     {
-        return $this->authkey === $authKey;
+        return $this->getAuthKey() === $authKey;
     }
 
     /**
@@ -122,6 +122,19 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function validatePassword($password)
     {
-        return Yii::$app->getSecurity()->validatePassword($password, $this->password);
+        return Yii::$app->getSecurity()->validatePassword(
+            $password,
+            $this->password
+        );
+    }
+
+    /**
+     * Generates "remember me" authentication key
+     *
+     * @return string
+     */
+    public function generateAuthKey()
+    {
+        return Yii::$app->getSecurity()->generateRandomString();
     }
 }
