@@ -45,7 +45,20 @@ $config = [
             'rules' => [
                 '<action:(login|contact|logout|about)>' => 'site/<action>',
                 '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'user',
+                    'only' => ['view', 'index', 'filter'],
+                    'extraPatterns' => [
+                        'GET filter' => 'filter'
+                    ]
+                ],
             ]
+        ],
+    ],
+    'modules' => [
+        'v1' => [
+            'class' => 'app\modules\v1\Module',
         ],
     ],
     'params' => $params,
