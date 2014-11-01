@@ -2,6 +2,7 @@
 
 namespace tests\unit\models;
 
+use app\tests\unit\fixtures\UserFixture;
 use Yii;
 use yii\codeception\TestCase;
 use app\models\LoginForm;
@@ -10,6 +11,14 @@ use Codeception\Specify;
 class LoginFormTest extends TestCase
 {
     use Specify;
+
+    public function fixtures()
+    {
+        return [
+            'user' => UserFixture::className(),
+            'dataFile' => '@app/tests/unit/fixtures/data/user-migration.php'
+        ];
+    }
 
     protected function tearDown()
     {
