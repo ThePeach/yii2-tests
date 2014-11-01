@@ -19,4 +19,4 @@ modules:
         PhpBrowser:
             url: 'http://basic-dev.yii2.sandbox'
         REST:
-            url: 'http://basic-dev.yii2.sandbox/api/v1/'
+            url: 'http://basic-dev.yii2.sandbox/v1/'

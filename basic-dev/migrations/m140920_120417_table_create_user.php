@@ -19,6 +19,11 @@ class m140920_120417_table_create_user extends Migration
                 'password' => Yii::$app->getSecurity()->generatePasswordHash('admin'),
                 'authkey' => uniqid()
             ]);
+        $this->insert('user', [
+                'username' => 'demo',
+                'password' => Yii::$app->getSecurity()->generatePasswordHash('demo'),
+                'authkey' => uniqid()
+            ]);
     }
 
     public function down()

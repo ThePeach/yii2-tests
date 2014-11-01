@@ -41,18 +41,17 @@ $config = [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-            'enableStrictParsing' => false,
+            'enableStrictParsing' => true,
             'rules' => [
-                '<action:(login|contact|logout|about)>' => 'site/<action>',
-                '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
                 [
                     'class' => 'yii\rest\UrlRule',
-                    'controller' => 'user',
-                    'only' => ['view', 'index', 'filter'],
-                    'extraPatterns' => [
-                        'GET filter' => 'filter'
-                    ]
+                    'controller' => 'v1/user',
                 ],
+                '/' => 'site/index',
+                '<action:\w+>' => 'site/<action>',
+                '<controller:\w+>/<id:\d+>' => '<controller>/view',
+                '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
+                '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
             ]
         ],
     ],
