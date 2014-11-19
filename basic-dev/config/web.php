@@ -46,6 +46,7 @@ $config = [
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => 'v1/user',
+                    'only' => ['view', 'update']
                 ],
                 '/' => 'site/index',
                 '<action:\w+>' => 'site/<action>',

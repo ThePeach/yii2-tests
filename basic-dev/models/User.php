@@ -52,6 +52,20 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * @inheritdoc
+     */
+    public function fields()
+    {
+        $fields = parent::fields();
+
+        if (Yii::$app->user->getId() != $this->getId()) {
+            unset($fields['password'], $fields['authkey']);
+        }
+
+        return $fields;
+    }
+
+    /**
      * Setter for the password.
      *
      * @param string $password
