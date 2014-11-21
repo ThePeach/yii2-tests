@@ -8,6 +8,7 @@ use yii\filters\auth\HttpBasicAuth;
 use yii\rest\ActiveController;
 use yii\web\ForbiddenHttpException;
 use Yii;
+use yii\web\UnauthorizedHttpException;
 
 class UserController extends ActiveController
 {
@@ -96,7 +97,7 @@ class UserController extends ActiveController
     public function checkAccess($action, $model = null, $params = [])
     {
         if (\Yii::$app->user->isGuest) {
-            throw new ForbiddenHttpException;
+            throw new UnauthorizedHttpException;
         }
     }
 }
