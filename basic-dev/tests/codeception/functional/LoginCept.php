@@ -1,6 +1,7 @@
 <?php
 
 use tests\codeception\_pages\LoginPage;
+use tests\codeception\fixtures\UserFixture;
 
 $I = new FunctionalTester($scenario);
 $I->wantTo('ensure that login works');

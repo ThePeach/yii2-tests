@@ -12,9 +12,10 @@ $I->sendGET('users/1');
 $I->seeResponseCodeIs(401);
 
 $I->amGoingTo('ensure I cannot view someone else');
-$I->haveHttpHeader('Authorization', 'Basic '.base64_encode('admin:admin'));
+$I->amHttpAuthenticated('admin', 'admin');
+//$I->haveHttpHeader('Authorization', 'Basic '.base64_encode('admin:admin'));
 $I->sendGET('users/2');
-$I->seeResponseCodeIs(401);
+$I->seeResponseCodeIs(403);
 
 $I->wantTo('ensure remaining actions are not available');
 

@@ -29,7 +29,6 @@ class UserController extends ActiveController
                     if ($user && $user->validatePassword($password)) {
                         return $user;
                     }
-                    return null;
                 }
         ];
 
