@@ -20,6 +20,8 @@
         "yiisoft/yii2-swiftmailer": "*"
     },
     "require-dev": {
+        "symfony/console": "2.5",
+        "symfony/yaml": "2.4",
         "yiisoft/yii2-codeception": "*",
         "yiisoft/yii2-debug": "*",
         "yiisoft/yii2-gii": "*",
