@@ -1,41 +1,51 @@
 <?php
-use tests\codeception\fixtures\UserFixture;
 
 $I = new FunctionalTester($scenario);
 $I->wantTo('test the user REST API');
 
-// FIXME there must be a way to access fixture rows...
-$user = [
-    'id' => 1,
-    'username' => 'user',
-    'password' => 'something'
-];
+$userFixtures = $I->getFixture('user');
+$user = $userFixtures['basic'];
+$userPassword = 'something';
 
-$I->amGoingTo('ensure I can fetch my own information while being authenticated');
-$I->amHttpAuthenticated($user['username'], $user['password']);
-//$I->haveHttpHeader('Authorization', 'Basic '.base64_encode($user->username.':'.$userPassword));
-$I->sendGET('users/'.$user['id']);
+$I->amGoingTo('authenticate to search for my own user');
+$I->amHttpAuthenticated($user['username'], $userPassword);
+$I->sendGET('users/search/'.$user['username']);
+$I->seeResponseCodeIs(200);
+$I->seeResponseIsJson();
+$I->seeResponseContains($user['username']);
+$I->seeResponseContains('password');
+$I->seeResponseContains('id');
+$userId = $I->grabDataFromJsonResponse('id');
+
+$I->amGoingTo('ensure OPTIONS works');
+$I->sendOPTIONS('users/'.$userId);
+$I->seeResponseCodeIs(200);
+$I->seeHttpHeader('Allow');
+
+$I->amGoingTo('fetch my own information');
+$I->sendGET('users/'.$userId);
 $I->seeResponseCodeIs(200);
 $I->seeResponseIsJson();
 $I->seeResponseContains($user['username']);
 $I->seeResponseContains('password');
 
-$I->amGoingTo('update my own password');
-$I->amHttpAuthenticated($user['username'], $user['password']);
-//$I->haveHttpHeader('Authorization', 'Basic '.base64_encode($user->username.':'.$userPassword));
+$I->amGoingTo('ensure I cannot view someone else');
+$I->sendGET('users/'.($user['id']+1));
+$I->seeResponseCodeIs(403);
+
+$I->amGoingTo('authenticate to update my own password');
+$I->amHttpAuthenticated($user['username'], $userPassword);
 $newPassword = 'something else';
 $I->sendPUT(
-    'users/' . $user['id'],
+    'users/' . $userId,
     ['password' => $newPassword, 'authkey' => 'updated']
 );
 $I->seeResponseIsJson();
 $I->seeResponseContains('true');
 $I->seeResponseCodeIs(200);
 
-$I->amGoingTo('check my new password works');
+$I->amGoingTo('authenticate to check my new password works');
 $I->amHttpAuthenticated($user['username'], $newPassword);
-//$I->haveHttpHeader('Authorization', 'Basic '.base64_encode($user->username.':'.$newPassword));
-$I->sendHEAD('users/'.$user['id']);
+$I->sendHEAD('users/'.$userId);
 $I->seeResponseIsJson();
-$I->seeResponseContains($user['username']);
 $I->seeResponseCodeIs(200);
