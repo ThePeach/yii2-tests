@@ -24,7 +24,7 @@ class FixtureHelper extends Module
         globalFixtures as protected;
         unloadFixtures as protected;
         getFixtures as protected;
-        getFixture as protected;
+        getFixture as public;
     }
 
     /**
