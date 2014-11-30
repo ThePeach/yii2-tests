@@ -46,7 +46,14 @@ $config = [
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => 'v1/user',
-                    'only' => ['view', 'update']
+                    'tokens' => [
+                        '{id}' => '<id:\\d[\\d,]*>',
+                        '{username}' => '<username:\\w+>'
+                    ],
+                    'extraPatterns' => [
+                        'GET search/{username}' => 'search',
+                    ],
+                    'only' => ['view', 'update', 'search', 'options']
                 ],
                 '/' => 'site/index',
                 '<action:\w+>' => 'site/<action>',

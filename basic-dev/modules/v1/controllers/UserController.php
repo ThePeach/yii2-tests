@@ -91,6 +91,22 @@ class UserController extends ActiveController
     }
 
     /**
+     * @param $username
+     *
+     * @return User
+     * @throws \yii\web\ForbiddenHttpException
+     */
+    public function actionSearch($username)
+    {
+        /** @var User $user */
+        $user = User::findByUsername($username);
+        if ($user && $user->id === Yii::$app->user->getId()) {
+            return $user;
+        }
+        throw new ForbiddenHttpException;
+    }
+
+    /**
      * @inheritdoc
      */
     public function checkAccess($action, $model = null, $params = [])
