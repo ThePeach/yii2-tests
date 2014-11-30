@@ -1,40 +1,41 @@
 <?php
 
 $I = new FunctionalTester($scenario);
-$I->wantTo('test the user REST API endpoints');
+$I->wantTo('test unauthorised and forbidden user REST API endpoints');
 
-$I->amGoingTo('ensure list users is not found without being authenticated');
-$I->sendHEAD('users');
-$I->seeResponseCodeIs(404);
+$userFixtures = $I->getFixture('user');
+$user = $userFixtures['admin'];
+$userPassword = 'admin';
 
-$I->amGoingTo('ensure I cannot fetch my own information while not authenticated');
-$I->sendGET('users/1');
+$I->amGoingTo('ensure I cannot search for users');
+$I->sendGET('users/search/'.$user['id']);
 $I->seeResponseCodeIs(401);
 
-$I->amGoingTo('ensure I cannot view someone else');
-$I->amHttpAuthenticated('admin', 'admin');
-//$I->haveHttpHeader('Authorization', 'Basic '.base64_encode('admin:admin'));
-$I->sendGET('users/2');
-$I->seeResponseCodeIs(403);
+$I->amGoingTo('ensure I cannot list any user');
+$I->sendHEAD('users/'.$user['id']);
+$I->seeResponseCodeIs(401);
 
-$I->wantTo('ensure remaining actions are not available');
+$I->amGoingTo('ensure I cannot update any user');
+$I->sendPUT('users/'.$user['id']);
+$I->seeResponseCodeIs(401);
 
-$I->amGoingTo('ensure list users is not found');
+$I->wantTo('ensure the disabled actions are not usable');
+
+$I->amGoingTo('ensure list users is not allowed');
+$I->amHttpAuthenticated($user['username'], $userPassword);
 $I->sendHEAD('users');
-$I->seeResponseCodeIs(404);
+$I->seeResponseCodeIs(405);
 $I->sendGET('users');
-$I->seeResponseCodeIs(404);
+$I->seeResponseCodeIs(405);
 
-$I->amGoingTo('ensure create user is not found');
+$I->amGoingTo('ensure create user is not allowed');
 $I->sendPOST('users');
-$I->seeResponseCodeIs(404);
+$I->seeResponseCodeIs(405);
 
-$I->amGoingTo('ensure delete user is not found');
-$I->sendDELETE('users/1');
-$I->seeResponseCodeIs(404);
+$I->amGoingTo('ensure deleting my own user is not allowed');
+$I->sendDELETE('users/'.$user['id']);
+$I->seeResponseCodeIs(405);
 
-$I->amGoingTo('ensure options is not found');
-$I->sendOPTIONS('users');
-$I->seeResponseCodeIs(404);
-$I->sendOPTIONS('users/1');
-$I->seeResponseCodeIs(404);
+$I->amGoingTo('ensure delete user is not allowed');
+$I->sendDELETE('users/'.($user['id']+1));
+$I->seeResponseCodeIs(405);
