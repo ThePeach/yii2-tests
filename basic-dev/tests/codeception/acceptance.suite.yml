@@ -11,16 +11,10 @@
 class_name: AcceptanceTester
 modules:
     enabled:
-        - PhpBrowser
-# you can use WebDriver instead of PhpBrowser to test javascript and ajax.
-# This will require you to install selenium. See http://codeception.com/docs/04-AcceptanceTests#Selenium
-# "restart" option is used by the WebDriver to start each time per test-file new session and cookies,
-# it is useful if you want to login in your app in each test.
-#        - WebDriver
+        - WebDriver
     config:
-        PhpBrowser:
-            url: 'http://localhost:8080'
-#        WebDriver:
-#            url: 'http://localhost'
-#            browser: firefox
-#            restart: true
+        WebDriver:
+            host: 192.168.56.1
+            url: 'http://basic-dev.yii2.sandbox'
+            browser: firefox
+            restart: true
