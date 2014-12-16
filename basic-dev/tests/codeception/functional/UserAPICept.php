@@ -33,6 +33,10 @@ $I->amGoingTo('ensure I cannot view someone else');
 $I->sendGET('users/'.($user['id']+1));
 $I->seeResponseCodeIs(403);
 
+$I->amGoingTo('ensure I cannot change my own username');
+$I->sendPOST('users/'.$userId, ['username' => 'atoll']);
+$I->seeResponseCodeIs(405);
+
 $I->amGoingTo('authenticate to update my own password');
 $I->amHttpAuthenticated($user['username'], $userPassword);
 $newPassword = 'something else';
