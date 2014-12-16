@@ -12,6 +12,7 @@ $I->see('Login', 'h1');
 $I->amGoingTo('try to login with empty credentials');
 $loginPage->login('', '');
 $I->expectTo('see validations errors');
+$I->waitForElementVisible('.help-block', 5);
 $I->see('Username cannot be blank.');
 $I->see('Password cannot be blank.');
 

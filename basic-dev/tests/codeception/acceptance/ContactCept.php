@@ -12,6 +12,7 @@ $I->see('Contact', 'h1');
 $I->amGoingTo('submit contact form with no data');
 $contactPage->submit([]);
 $I->expectTo('see validations errors');
+$I->waitForElementVisible('.help-block', 5);
 $I->see('Contact', 'h1');
 $I->see('Name cannot be blank');
 $I->see('Email cannot be blank');
