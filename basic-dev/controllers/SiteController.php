@@ -11,6 +11,13 @@ use app\models\ContactForm;
 
 class SiteController extends Controller
 {
+    public $loginForm = null;
+
+    public function init()
+    {
+        $this->loginForm = new LoginForm();
+    }
+
     public function behaviors()
     {
         return [
