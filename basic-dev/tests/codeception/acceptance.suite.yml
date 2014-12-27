@@ -18,3 +18,19 @@ modules:
             url: 'http://basic-dev.yii2.sandbox'
             browser: firefox
             restart: true
+            window_size: 1024x768
+
+env:
+    chrome:
+        modules:
+            config:
+                WebDriver:
+                    browser: chrome
+    firefox:
+        # nothing changed
+    internetexplorer:
+        modules:
+            config:
+                WebDriver:
+                    host: 192.168.56.102
+                    browser: internetexplorer 
