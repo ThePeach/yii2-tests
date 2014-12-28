@@ -12,7 +12,9 @@ $I->see('Contact', 'h1');
 $I->amGoingTo('submit contact form with no data');
 $contactPage->submit([]);
 $I->expectTo('see validations errors');
-$I->waitForElementVisible('.help-block', 5);
+if (method_exists($I, 'wait')) {
+    $I->wait(3); // only for selenium
+}
 $I->see('Contact', 'h1');
 $I->see('Name cannot be blank');
 $I->see('Email cannot be blank');
@@ -28,6 +30,9 @@ $contactPage->submit([
     'body' => 'test content',
     'verifyCode' => 'testme',
 ]);
+if (method_exists($I, 'wait')) {
+    $I->wait(3); // only for selenium
+}
 $I->expectTo('see that email adress is wrong');
 $I->dontSee('Name cannot be blank', '.help-inline');
 $I->see('Email is not a valid email address.');

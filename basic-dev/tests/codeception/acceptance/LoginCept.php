@@ -12,7 +12,9 @@ $I->see('Login', 'h1');
 $I->amGoingTo('try to login with empty credentials');
 $loginPage->login('', '');
 $I->expectTo('see validations errors');
-$I->waitForElementVisible('.help-block', 5);
+if (method_exists($I, 'wait')) {
+    $I->wait(3); // only for selenium
+}
 $I->see('Username cannot be blank.');
 $I->see('Password cannot be blank.');
 
