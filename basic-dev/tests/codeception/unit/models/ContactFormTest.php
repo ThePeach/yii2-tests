@@ -20,14 +20,29 @@ class ContactFormTest extends TestCase
 
     protected function tearDown()
     {
-        unlink($this->getMessageFile());
         parent::tearDown();
     }
 
-    public function testContact()
+    public function testContactReturnsFalseIfModelDoesNotValidate()
     {
         $model = $this->getMock('app\models\ContactForm', ['validate']);
-        $model->expects($this->once())->method('validate')->will($this->returnValue(true));
+        $model->expects($this->any())
+              ->method('validate')
+              ->will($this->returnValue(false));
+
+        $this->specify('contact should not send', function () use (&$model) {
+            expect($model->contact(null), false);
+            expect($model->contact('admin@example.com'), false);
+        });
+
+    }
+
+    public function testContactReturnsTheCorrectEmail()
+    {
+        $model = $this->getMock('app\models\ContactForm', ['validate']);
+        $model->expects($this->once())
+            ->method('validate')
+            ->will($this->returnValue(true));
 
         $model->attributes = [
             'name' => 'Tester',
@@ -38,7 +53,7 @@ class ContactFormTest extends TestCase
 
         $model->contact('admin@example.com');
 
-        $this->specify('email should be send', function () {
+        $this->specify('email should be sent', function () {
             expect('email file should exist', file_exists($this->getMessageFile()))->true();
         });
 
@@ -50,6 +65,8 @@ class ContactFormTest extends TestCase
             expect('email should contain subject', $emailMessage)->contains($model->subject);
             expect('email should contain body', $emailMessage)->contains($model->body);
         });
+
+        unlink($this->getMessageFile());
     }
 
     private function getMessageFile()

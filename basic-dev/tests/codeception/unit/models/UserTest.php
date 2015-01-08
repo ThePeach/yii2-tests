@@ -313,4 +313,14 @@ class UserTest extends TestCase
 
         Yii::$app->set('security', $security);
     }
+
+    /* generateAuthKey() */
+
+    public function testGenerateAuthKeyReturnsRandomStrings()
+    {
+        $user = new User;
+
+        $firstKey = $user->generateAuthKey();
+        $this->assertNotEquals($user->generateAuthKey(), $firstKey);
+    }
 }

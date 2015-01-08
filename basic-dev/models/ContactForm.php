@@ -33,6 +33,7 @@ class ContactForm extends Model
 
     /**
      * @return array customized attribute labels
+     * @codeCoverageIgnore
      */
     public function attributeLabels()
     {

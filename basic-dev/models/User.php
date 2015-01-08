@@ -53,6 +53,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * @inheritdoc
+     * @codeCoverageIgnore
      */
     public function fields()
     {
