@@ -18,6 +18,6 @@ coverage:
     remote_config: ../tests/codeception.yml
     include:
         - ../models/*
-#        - ../modules/*
-#        - ../controllers/*
-#    c3_url: 'https://basic-dev.yii2.sandbox/index-test.php/'
+        - ../modules/*
+        - ../controllers/*
+    c3_url: 'https://basic-dev.yii2.sandbox/index-test.php/'

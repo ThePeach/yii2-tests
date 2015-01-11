@@ -8,6 +8,7 @@ use yii\filters\auth\HttpBasicAuth;
 use yii\rest\ActiveController;
 use yii\web\ForbiddenHttpException;
 use Yii;
+use yii\web\MethodNotAllowedHttpException;
 use yii\web\UnauthorizedHttpException;
 
 class UserController extends ActiveController
@@ -52,22 +53,31 @@ class UserController extends ActiveController
      *
      * @param integer $id the id of the model to update
      *
-     * @return HttpRequestMethodException
+     * @return bool
+     *
+     * @throws ForbiddenHttpException
+     * @throws MethodNotAllowedHttpException
      */
     public function actionUpdate($id)
     {
         if (! Yii::$app->request->isPut) {
-            return new HttpRequestMethodException();
+            throw new MethodNotAllowedHttpException('Please use PUT');
+        }
+
+        $post = Yii::$app->request->post();
+
+        if (!empty($post['username'])) {
+            throw new ForbiddenHttpException('You cannot change your own username');
         }
 
         /** @var User $user */
         $user = User::findIdentity($id);
 
-        if (Yii::$app->request->post('password') !== null) {
+        if (!empty($post['password'])) {
             $user->setPassword(Yii::$app->request->post('password'));
         }
 
-        if (Yii::$app->request->post('authkey') !== null) {
+        if (!empty($post['authkey'])) {
             $user->authkey = Yii::$app->request->post('authkey');
         }
 

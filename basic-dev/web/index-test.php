@@ -1,7 +1,7 @@
 <?php
 
 // NOTE: Make sure this file is not accessible when deployed to production
-if (!in_array(@$_SERVER['REMOTE_ADDR'], ['127.0.0.1', '::1', '192.168.56.1', '192.168.56.101', '192.168.56.102'])) {
+if (!in_array(@$_SERVER['REMOTE_ADDR'], ['127.0.0.1', '::1', '192.168.56.1', '192.168.56.2', '192.168.56.101', '192.168.56.102'])) {
     die('You are not allowed to access this file.');
 }
 
@@ -13,4 +13,5 @@ require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
 
 $config = require(__DIR__ . '/../tests/codeception/config/acceptance.php');
 
+include 'c3.php';
 (new yii\web\Application($config))->run();

@@ -15,10 +15,10 @@ $I->seeResponseIsJson();
 $I->seeResponseContains($user['username']);
 $I->seeResponseContains('password');
 $I->seeResponseContains('id');
-$userId = $I->grabDataFromJsonResponse('id');
+$userId = $I->grabDataFromResponseByJsonPath('$.id')[0];
 
 $I->amGoingTo('ensure OPTIONS works');
-$I->sendOPTIONS('users/'.$userId);
+$I->sendOPTIONS('users');
 $I->seeResponseCodeIs(200);
 $I->seeHttpHeader('Allow');
 
@@ -29,13 +29,13 @@ $I->seeResponseIsJson();
 $I->seeResponseContains($user['username']);
 $I->seeResponseContains('password');
 
-$I->amGoingTo('ensure I cannot view someone else');
+$I->amGoingTo('ensure viewing someone else is forbidden');
 $I->sendGET('users/'.($user['id']+1));
 $I->seeResponseCodeIs(403);
 
-$I->amGoingTo('ensure I cannot change my own username');
-$I->sendPOST('users/'.$userId, ['username' => 'atoll']);
-$I->seeResponseCodeIs(405);
+$I->amGoingTo('ensure changing my own username is forbidden');
+$I->sendPUT('users/'.$userId, ['username' => 'atoll']);
+$I->seeResponseCodeIs(403);
 
 $I->amGoingTo('authenticate to update my own password');
 $I->amHttpAuthenticated($user['username'], $userPassword);
