@@ -173,6 +173,17 @@
         </exec>
     </target>
 
+    <target name="codeception"
+            depends="prepare"
+            description="Runs CodeCeption">
+        <exec executable="${toolsdir}codecept" failonerror="true">
+            <arg value="run"/>
+            <arg value="--xml"/><!-- generate JUnit XML file [report.xml] -->
+            <arg value="--coverage-xml"/><!-- generate CodeCoverage report [coverage.xml] -->
+            <arg value="${codecept.suites}"/>
+        </exec>
+    </target>
+
     <target name="phpdox"
             depends="phploc-ci,phpcs-ci,phpmd-ci"
             description="Generate project documentation using phpDox">
