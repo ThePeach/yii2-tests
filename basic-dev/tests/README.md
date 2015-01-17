@@ -80,7 +80,9 @@ You can see code coverage output under the `tests/_output` directory.
 
 ###Remote code coverage
 
-When you run your tests not in the same process where code coverage is collected, then you should uncomment `remote` option and its related options, to be able to collect code coverage correctly. To setup remote code coverage you should follow [instructions](http://codeception.com/docs/11-Codecoverage) from codeception site.
+When you run your tests not in the same process where code coverage is collected, then you should uncomment `remote` option and its
+related options, to be able to collect code coverage correctly. To setup remote code coverage you should follow [instructions](http://codeception.com/docs/11-Codecoverage)
+from codeception site.
 
 1. install `Codeception c3` remote support `composer require "codeception/c3:*"`;
 
@@ -92,11 +94,13 @@ Configuration options that are used by remote code coverage:
 
 - c3_url: url pointing to entry script that includes `c3.php` file, so `Codeception` will be able to produce code coverage;
 - remote: whether to enable remote code coverage or not;
-- remote_config: path to the `codeception.yml` configuration file, from the directory where `c3.php` file is located. This is needed so that `Codeception` can create itself instance and collect code coverage correctly.
+- remote_config: path to the `codeception.yml` configuration file, from the directory where `c3.php` file is located. This is needed
+  so that `Codeception` can create itself instance and collect code coverage correctly.
 
 By default `c3_url` and `remote_config` setup correctly, you only need to copy and include `c3.php` file in your `index-test.php`
 
-After that you should be able to collect code coverage from tests that run through `PhpBrowser` or `WebDriver` with same command as for other tests:
+After that you should be able to collect code coverage from tests that run through `PhpBrowser` or `WebDriver` with same command
+as for other tests:
 
 ```
 #collect coverage from remote

@@ -11,7 +11,7 @@ settings:
     log: true
     colors: true
 config:
-    test_entry_url: /index-test.php
+    test_entry_url: https://basic-dev.yii2.sandbox/index-test.php
 coverage:
     enabled: true
     remote: true
