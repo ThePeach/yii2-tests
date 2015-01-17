@@ -3,13 +3,14 @@
     <property name="toolsdir" value="${basedir}/vendor/bin/"/>
 
     <include file="${basedir}/build/composer.xml" as="composer"/>
+    <include file="${basedir}/build/yii.xml" as="yii"/>
 
     <target name="build"
-            depends="prepare,lint,phploc-ci,pdepend,phpmd-ci,phpcs-ci,phpcpd-ci,phpunit,phpdox"
+            depends="prepare,lint,phploc-ci,pdepend,phpmd-ci,phpcs-ci,phpcpd-ci,codeception,phpdox"
             description=""/>
 
     <target name="build-parallel"
-            depends="prepare,lint,tools-parallel,phpunit,phpdox"
+            depends="prepare,lint,tools-parallel,codeception,phpdox"
             description=""/>
 
     <target name="tools-parallel" description="Run tools in parallel">
@@ -33,21 +34,21 @@
         <delete dir="${basedir}/vendor"/>
         <!--<delete dir="${basedir}/build/api"/>-->
         <!--<delete dir="${basedir}/build/coverage"/>-->
-        <!--<delete dir="${basedir}/build/logs"/>-->
-        <!--<delete dir="${basedir}/build/pdepend"/>-->
+        <delete dir="${basedir}/build/logs"/>
+        <delete dir="${basedir}/build/pdepend"/>
         <!--<delete dir="${basedir}/build/phpdox"/>-->
         <property name="clean.done" value="true"/>
     </target>
 
     <target name="prepare"
             unless="prepare.done"
-            depends="clean, composer.composer"
+            depends="clean, composer.composer, yii.migrate-all"
             description="Prepare for build">
         <mkdir dir="${basedir}/tests/_output"/>
         <!--<mkdir dir="${basedir}/build/api"/>-->
         <!--<mkdir dir="${basedir}/build/coverage"/>-->
-        <!--<mkdir dir="${basedir}/build/logs"/>-->
-        <!--<mkdir dir="${basedir}/build/pdepend"/>-->
+        <mkdir dir="${basedir}/build/logs"/>
+        <mkdir dir="${basedir}/build/pdepend"/>
         <!--<mkdir dir="${basedir}/build/phpdox"/>-->
         <property name="prepare.done" value="true"/>
     </target>
@@ -56,11 +57,18 @@
         <apply executable="php" failonerror="true">
             <arg value="-l" />
 
-            <fileset dir="${basedir}/src">
+            <fileset dir="${basedir}/models">
                 <include name="**/*.php" />
                 <modified />
             </fileset>
-
+            <fileset dir="${basedir}/modules">
+                <include name="**/*.php" />
+                <modified />
+            </fileset>
+            <fileset dir="${basedir}/controllers">
+                <include name="**/*.php" />
+                <modified />
+            </fileset>
             <fileset dir="${basedir}/tests">
                 <include name="**/*.php" />
                 <modified />
@@ -72,7 +80,9 @@
             description="Measure project size using PHPLOC and print human readable output. Intended for usage on the command line.">
         <exec executable="${toolsdir}phploc">
             <arg value="--count-tests" />
-            <arg path="${basedir}/src" />
+            <arg path="${basedir}/models" />
+            <arg path="${basedir}/controllers" />
+            <arg path="${basedir}/modules" />
             <arg path="${basedir}/tests" />
         </exec>
     </target>
@@ -86,7 +96,9 @@
             <arg path="${basedir}/build/logs/phploc.csv" />
             <arg value="--log-xml" />
             <arg path="${basedir}/build/logs/phploc.xml" />
-            <arg path="${basedir}/src" />
+            <arg path="${basedir}/models" />
+            <arg path="${basedir}/controllers" />
+            <arg path="${basedir}/modules" />
             <arg path="${basedir}/tests" />
         </exec>
     </target>
@@ -98,14 +110,14 @@
             <arg value="--jdepend-xml=${basedir}/build/logs/jdepend.xml" />
             <arg value="--jdepend-chart=${basedir}/build/pdepend/dependencies.svg" />
             <arg value="--overview-pyramid=${basedir}/build/pdepend/overview-pyramid.svg" />
-            <arg path="${basedir}/src" />
+            <arg path="${basedir}/models,${basedir}/controllers,${basedir}/modules,${basedir}/tests" />
         </exec>
     </target>
 
     <target name="phpmd"
             description="Perform project mess detection using PHPMD and print human readable output. Intended for usage on the command line before committing.">
         <exec executable="${toolsdir}phpmd">
-            <arg path="${basedir}/src" />
+            <arg path="${basedir}/models,${basedir}/controllers,${basedir}/modules" />
             <arg value="text" />
             <arg path="${basedir}/build/phpmd.xml" />
         </exec>
@@ -115,7 +127,7 @@
             depends="prepare"
             description="Perform project mess detection using PHPMD and log result in XML format. Intended for usage within a continuous integration environment.">
         <exec executable="${toolsdir}phpmd">
-            <arg path="${basedir}/src" />
+            <arg path="${basedir}/models,${basedir}/controllers,${basedir}/modules" />
             <arg value="xml" />
             <arg path="${basedir}/build/phpmd.xml" />
             <arg value="--reportfile" />
@@ -129,7 +141,9 @@
             <arg value="--standard=PSR2" />
             <arg value="--extensions=php" />
             <arg value="--ignore=autoload.php" />
-            <arg path="${basedir}/src" />
+            <arg path="${basedir}/models" />
+            <arg path="${basedir}/controllers" />
+            <arg path="${basedir}/modules" />
             <arg path="${basedir}/tests" />
         </exec>
     </target>
@@ -143,14 +157,18 @@
             <arg value="--standard=PSR2" />
             <arg value="--extensions=php" />
             <arg value="--ignore=autoload.php" />
-            <arg path="${basedir}/src" />
+            <arg path="${basedir}/models" />
+            <arg path="${basedir}/controllers" />
+            <arg path="${basedir}/modules" />
         </exec>
     </target>
 
     <target name="phpcpd"
             description="Find duplicate code using PHPCPD and print human readable output. Intended for usage on the command line before committing.">
         <exec executable="${toolsdir}phpcpd">
-            <arg path="${basedir}/src" />
+            <arg path="${basedir}/models" />
+            <arg path="${basedir}/controllers" />
+            <arg path="${basedir}/modules" />
         </exec>
     </target>
 
@@ -160,7 +178,9 @@
         <exec executable="${toolsdir}phpcpd">
             <arg value="--log-pmd" />
             <arg path="${basedir}/build/logs/pmd-cpd.xml" />
-            <arg path="${basedir}/src" />
+            <arg path="${basedir}/models" />
+            <arg path="${basedir}/controllers" />
+            <arg path="${basedir}/modules" />
         </exec>
     </target>
 
@@ -176,7 +196,7 @@
     <target name="codeception"
             depends="prepare"
             description="Runs CodeCeption">
-        <exec executable="${toolsdir}codecept" failonerror="true">
+        <exec executable="${toolsdir}codecept" failonerror="true" dir="${basedir}/tests">
             <arg value="run"/>
             <arg value="--xml"/><!-- generate JUnit XML file [report.xml] -->
             <arg value="--coverage-xml"/><!-- generate CodeCoverage report [coverage.xml] -->

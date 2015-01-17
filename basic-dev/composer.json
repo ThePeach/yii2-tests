@@ -30,7 +30,13 @@
         "codeception/codeception": " 2.0.*",
         "codeception/specify": "*",
         "codeception/verify": "*",
-        "codeception/c3": "2.*"
+        "codeception/c3": "2.*",
+        "phploc/phploc": "@stable",
+        "pdepend/pdepend": "@stable",
+        "phpmd/phpmd": "@stable",
+        "sebastian/phpcpd": "@dev",
+        "yiisoft/yii2-coding-standards": "*",
+        "theseer/phpdox": "@stable"
     },
     "config": {
         "process-timeout": 1800
