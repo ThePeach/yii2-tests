@@ -7,7 +7,7 @@
 
     <target name="migrate-all"
             unless="${yii.script.ok},${yii.tests.script.ok}"
-            depends="exists,exists-tests"
+            depends="script-exists,script-tests-exists"
             description="Run all migrations">
         <echo message="Run migrations"/>
         <migrate exec="${yii.script}" action="redo"/>
@@ -31,11 +31,11 @@
         </sequential>
     </macrodef>
 
-    <target name="exists">
+    <target name="script-exists">
         <available property="yii.script.ok" file="${yii.script}" />
     </target>
 
-    <target name="exists-tests">
+    <target name="script-tests-exists">
         <available property="yii.tests.script.ok" file="${yii.tests.script}" />
     </target>
 
