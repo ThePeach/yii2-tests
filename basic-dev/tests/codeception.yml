@@ -16,8 +16,21 @@ coverage:
     enabled: true
     remote: true
     remote_config: ../tests/codeception.yml
-    include:
-        - ../models/*
-        - ../modules/*
-        - ../controllers/*
+    white_list:
+        include:
+            - ../models/*
+            - ../modules/v1/controllers/*
+            - ../controllers/*
+            - ../commands/*
+            - ../mail/*
+    blacklist:
+        include:
+            - ../assets/*
+            - ../build/*
+            - ../config/*
+            - ../runtime/*
+            - ../vendor/*
+            - ../views/*
+            - ../web/*
+            - ../tests/*
     c3_url: 'https://basic-dev.yii2.sandbox/index-test.php/'
