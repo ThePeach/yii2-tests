@@ -194,8 +194,17 @@
         </exec>
     </target>
 
-    <target name="codeception"
+    <target name="codeception-prepare"
             depends="prepare"
+            description="Builds CodeCeption modules">
+        <exec executable="${toolsdir}codecept" failonerror="true"
+              dir="${basedir}/tests">
+            <arg value="build"/>
+        </exec>
+    </target>
+
+    <target name="codeception"
+            depends="codeception-prepare"
             description="Runs CodeCeption">
         <exec executable="${toolsdir}codecept" failonerror="true" dir="${basedir}/tests">
             <arg value="run"/>
