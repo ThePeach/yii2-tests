@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="Yii 2 Basic App" default="build">
     <property name="toolsdir" value="${basedir}/vendor/bin/"/>
+    <property name="codecept.suites" value="unit" />
 
     <include file="${basedir}/build/composer.xml" as="composer"/>
     <include file="${basedir}/build/yii.xml" as="yii"/>
@@ -198,9 +199,9 @@
             description="Runs CodeCeption">
         <exec executable="${toolsdir}codecept" failonerror="true" dir="${basedir}/tests">
             <arg value="run"/>
-            <arg value="--xml"/><!-- generate JUnit XML file [report.xml] -->
-            <arg value="--coverage-xml"/><!-- generate CodeCoverage report [coverage.xml] -->
             <arg value="${codecept.suites}"/>
+            <arg value="--xml"/>
+            <arg value="--coverage-xml"/>
         </exec>
     </target>
 
