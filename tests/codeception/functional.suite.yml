@@ -9,7 +9,6 @@
 class_name: FunctionalTester
 modules:
     enabled:
-      - PhpBrowser
       - Filesystem
       - Yii2
       - REST
@@ -17,7 +16,5 @@ modules:
     config:
         Yii2:
             configFile: 'codeception/config/functional.php'
-        PhpBrowser:
-            url: 'http://basic-dev.yii2.sandbox'
         REST:
             url: 'http://basic-dev.yii2.sandbox/v1/'
