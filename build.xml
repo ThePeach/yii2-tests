@@ -5,13 +5,14 @@
 
     <include file="${basedir}/build/composer.xml" as="composer"/>
     <include file="${basedir}/build/yii.xml" as="yii"/>
+    <include file="${basedir}/build/codeception.xml" as="codeception"/>
 
     <target name="build"
-            depends="prepare,lint,phploc-ci,pdepend,phpmd-ci,phpcs-ci,phpcpd-ci,codeception,phpdox"
+            depends="prepare,lint,phploc-ci,pdepend,phpmd-ci,phpcs-ci,phpcpd-ci,codeception.run-tests,phpdox"
             description=""/>
 
     <target name="build-parallel"
-            depends="prepare,lint,tools-parallel,codeception,phpdox"
+            depends="prepare,lint,tools-parallel,codeception.run-tests,phpdox"
             description=""/>
 
     <target name="tools-parallel" description="Run tools in parallel">
@@ -37,7 +38,7 @@
         <!--<delete dir="${basedir}/build/coverage"/>-->
         <delete dir="${basedir}/build/logs"/>
         <delete dir="${basedir}/build/pdepend"/>
-        <!--<delete dir="${basedir}/build/phpdox"/>-->
+        <delete dir="${basedir}/build/phpdox"/>
         <property name="clean.done" value="true"/>
     </target>
 
@@ -50,7 +51,7 @@
         <!--<mkdir dir="${basedir}/build/coverage"/>-->
         <mkdir dir="${basedir}/build/logs"/>
         <mkdir dir="${basedir}/build/pdepend"/>
-        <!--<mkdir dir="${basedir}/build/phpdox"/>-->
+        <mkdir dir="${basedir}/build/phpdox"/>
         <property name="prepare.done" value="true"/>
     </target>
 
@@ -191,26 +192,6 @@
         <exec executable="${toolsdir}phpunit" failonerror="true">
             <arg value="--configuration"/>
             <arg path="${basedir}/build/phpunit.xml"/>
-        </exec>
-    </target>
-
-    <target name="codeception-prepare"
-            depends="prepare"
-            description="Builds CodeCeption modules">
-        <exec executable="${toolsdir}codecept" failonerror="true"
-              dir="${basedir}/tests">
-            <arg value="build"/>
-        </exec>
-    </target>
-
-    <target name="codeception"
-            depends="codeception-prepare"
-            description="Runs CodeCeption">
-        <exec executable="${toolsdir}codecept" failonerror="true" dir="${basedir}/tests">
-            <arg value="run"/>
-            <arg value="${codecept.suites}"/>
-            <arg value="--xml"/>
-            <arg value="--coverage-xml"/>
         </exec>
     </target>
 

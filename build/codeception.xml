@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="codeception" basedir=".">
+
+    <property name="tests.basedir" value="${basedir}/tests"/>
+    <property name="codeception.basedir" value="${basedir}/tests/codeception"/>
+    <property name="codeception.script" value="${basedir}/vendor/bin/codecept"/>
+    <property name="yii.tests.script" value="${basedir}/tests/codeception/bin/yii"/>
+    <property name="codeception.options" value="--coverage-xml --xml"/>
+
+    <target name="run-tests"
+            depends="build"
+            description="Runs all tests">
+        <run suites="unit,functional,acceptance" options="${codeception.options}"/>
+    </target>
+
+    <macrodef name="run"
+              description="Run tests">
+        <attribute name="suites" />
+        <attribute name="options" default="--coverage-html"/>
+        <sequential>
+            <echo message="run @{suites} @{options}" />
+            <exec executable="${codeception.script}"
+                  dir="${tests.basedir}">
+                <arg value="run" />
+                <arg value="@{suites}" />
+                <arg value="@{options}" />
+            </exec>
+        </sequential>
+    </macrodef>
+
+    <target name="build"
+            depends="script-exists"
+            unless="${codeception.script}"
+            description="Build all modules">
+        <sequential>
+            <echo message="build" />
+            <exec executable="${codeception.script}"
+                  dir="${tests.basedir}">
+                <arg value="build" />
+            </exec>
+        </sequential>
+    </target>
+
+    <target name="script-exists">
+        <available property="codeception.script.ok" file="${codeception.script}" />
+    </target>
+
+</project>
