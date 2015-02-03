@@ -8,7 +8,10 @@ $user = $userFixtures['basic'];
 $userPassword = 'something';
 
 $I->amGoingTo('authenticate to search for my own user');
-$I->amHttpAuthenticated($user['username'], $userPassword);
+$I->haveHttpHeader(
+    'Authorization',
+    'Basic ' . base64_encode($user['username'] . ':' . $userPassword)
+);
 $I->sendGET('users/search/'.$user['username']);
 $I->seeResponseCodeIs(200);
 $I->seeResponseIsJson();
@@ -38,7 +41,6 @@ $I->sendPUT('users/'.$userId, ['username' => 'atoll']);
 $I->seeResponseCodeIs(403);
 
 $I->amGoingTo('authenticate to update my own password');
-$I->amHttpAuthenticated($user['username'], $userPassword);
 $newPassword = 'something else';
 $I->sendPUT(
     'users/' . $userId,
@@ -49,7 +51,10 @@ $I->seeResponseContains('true');
 $I->seeResponseCodeIs(200);
 
 $I->amGoingTo('authenticate to check my new password works');
-$I->amHttpAuthenticated($user['username'], $newPassword);
+$I->haveHttpHeader(
+    'Authorization',
+    'Basic ' . base64_encode($user['username'] . ':' . $newPassword)
+);
 $I->sendHEAD('users/'.$userId);
 $I->seeResponseIsJson();
 $I->seeResponseCodeIs(200);

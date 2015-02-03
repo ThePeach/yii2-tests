@@ -22,7 +22,10 @@ $I->seeResponseCodeIs(401);
 $I->wantTo('ensure the disabled actions are not usable');
 
 $I->amGoingTo('ensure list users is not allowed');
-$I->amHttpAuthenticated($user['username'], $userPassword);
+$I->haveHttpHeader(
+    'Authorization',
+    'Basic ' . base64_encode($user['username'] . ':' . $userPassword)
+);
 $I->sendHEAD('users');
 $I->seeResponseCodeIs(405);
 $I->sendGET('users');
