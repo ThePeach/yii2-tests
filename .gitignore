@@ -31,5 +31,8 @@ phpunit.phar
 tests/codeception/_output/*
 build/pdepend
 build/logs
+build/api
+build/phpdox
+build/composer.properties.tmp
 cache.properties
 

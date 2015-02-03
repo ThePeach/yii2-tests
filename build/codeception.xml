@@ -2,21 +2,35 @@
 <project name="codeception" basedir=".">
 
     <property name="tests.basedir" value="${basedir}/tests"/>
-    <property name="codeception.basedir" value="${basedir}/tests/codeception"/>
+    <property name="codeception.basedir" value="${tests.basedir}/codeception"/>
+    <property name="yii.tests.script" value="${codeception.basedir}/bin/yii"/>
     <property name="codeception.script" value="${basedir}/vendor/bin/codecept"/>
-    <property name="yii.tests.script" value="${basedir}/tests/codeception/bin/yii"/>
-    <property name="codeception.options" value="--coverage-xml --xml"/>
+    <property name="codeception.suites.default" value="unit,functional,acceptance" />
+    <property name="codeception.options.default" value="--coverage-html" />
+
+    <condition property="codeception.suites" value="${codeception.suites.default}">
+        <not>
+            <isset property="codeception.suites"/>
+        </not>
+    </condition>
+
+    <condition property="codeception.options" value="${codeception.options.default}">
+        <not>
+            <isset property="codeception.options"/>
+        </not>
+    </condition>
 
     <target name="run-tests"
             depends="build"
             description="Runs all tests">
-        <run suites="unit,functional,acceptance" options="${codeception.options}"/>
+        <echo message="running codeception ${codeception.suites} ${codeception.options}" />
+        <run suites="${codeception.suites}" options="${codeception.options}"/>
     </target>
 
     <macrodef name="run"
               description="Run tests">
-        <attribute name="suites" />
-        <attribute name="options" default="--coverage-html"/>
+        <attribute name="suites" default="${codeception.suites.default}"/>
+        <attribute name="options" default="${codeception.options.default}"/>
         <sequential>
             <echo message="run @{suites} @{options}" />
             <exec executable="${codeception.script}"

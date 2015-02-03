@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<phpdox xmlns="http://phpdox.net/config">
-    <project name="Yii2" source="${basedir}" workdir="${basedir}/phpdox">
+<phpdox xmlns="http://xml.phpdox.net/config" silent="false">
+    <project name="Yii2" source="${basedir}/.." workdir="${basedir}/phpdox">
 
         <collector publiconly="false">
-            <include mask="models/*.php" />
+            <include mask="${phpDox.project.source}/models/*.php" />
+            <include mask="${phpDox.project.source}/modules/*.php" />
+            <include mask="${phpDox.project.source}/controllers/*.php" />
+            <include mask="${phpDox.project.source}/vendor/yiisoft/yii2/*.php" />
         </collector>
 
-        <generator output="build">
-            <build engine="html" enabled="true" output="api">
+        <generator output="${basedir}/api">
+            <build engine="html" enabled="true">
                 <file extension="html" />
             </build>
         </generator>
