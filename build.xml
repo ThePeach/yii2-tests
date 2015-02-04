@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="Yii 2 Basic App" default="build">
     <property name="toolsdir" value="${basedir}/vendor/bin/"/>
-    <property name="codecept.suites" value="unit" />
 
     <include file="${basedir}/build/composer.xml" as="composer"/>
     <include file="${basedir}/build/yii.xml" as="yii"/>
