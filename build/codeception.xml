@@ -3,7 +3,6 @@
 
     <property name="tests.basedir" value="${basedir}/tests"/>
     <property name="codeception.basedir" value="${tests.basedir}/codeception"/>
-    <property name="yii.tests.script" value="${codeception.basedir}/bin/yii"/>
     <property name="codeception.script" value="${basedir}/vendor/bin/codecept"/>
     <property name="codeception.suites.default" value="" />
     <property name="codeception.options.default" value="--coverage-html" />
