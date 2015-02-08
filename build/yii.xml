@@ -26,7 +26,7 @@
                 <arg value="migrate/@{action}"/>
                 <arg value="all" />
                 <arg value="--interactive=0"/>
-                <arg value="--colors=0"/>
+                <arg value="--color=0"/>
             </exec>
         </sequential>
     </macrodef>

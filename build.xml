@@ -31,13 +31,12 @@
             description="Cleanup build artifacts">
         <delete dir="${basedir}/runtime/*"/>
         <delete dir="${basedir}/web/assets/*"/>
-        <delete dir="${basedir}/tests/_output"/>
         <delete dir="${basedir}/vendor"/>
         <delete dir="${basedir}/build/api"/>
-        <!--<delete dir="${basedir}/build/coverage"/>-->
         <delete dir="${basedir}/build/logs"/>
         <delete dir="${basedir}/build/pdepend"/>
         <delete dir="${basedir}/build/phpdox"/>
+        <delete dir="${basedir}/tests/codeception/_output"/>
         <property name="clean.done" value="true"/>
     </target>
 
@@ -45,12 +44,11 @@
             unless="prepare.done"
             depends="clean, composer.composer, yii.migrate-all"
             description="Prepare for build">
-        <mkdir dir="${basedir}/tests/_output"/>
         <mkdir dir="${basedir}/build/api"/>
-        <!--<mkdir dir="${basedir}/build/coverage"/>-->
         <mkdir dir="${basedir}/build/logs"/>
         <mkdir dir="${basedir}/build/pdepend"/>
         <mkdir dir="${basedir}/build/phpdox"/>
+        <mkdir dir="${basedir}/tests/codeception/_output"/>
         <property name="prepare.done" value="true"/>
     </target>
 
@@ -155,7 +153,7 @@
         <exec executable="${toolsdir}phpcs" output="/dev/null">
             <arg value="--report=checkstyle" />
             <arg value="--report-file=${basedir}/build/logs/checkstyle.xml" />
-            <arg value="--standard=PSR2" />
+            <arg value="--standard=${basedir}/vendor/yiisoft/yii2-coding-standards/Yii2/ruleset.xml" />
             <arg value="--extensions=php" />
             <arg value="--ignore=autoload.php" />
             <arg path="${basedir}/models" />
